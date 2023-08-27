@@ -1,0 +1,14 @@
+
+{%  if request.user.is_authenticated %}
+<div class="header-container">
+<div>
+<h2>Ваш профиль: {{ request.user }} </h2>
+</div>
+       <div class="col-lg-auto logout"> <h2><a href="{% url 'logout' %}"> Выход </a></h2></div>
+</div>
+
+
+{% else %}
+<h1> Добро пожаловать в приложение TODO</h1>
+{% endif %}
+

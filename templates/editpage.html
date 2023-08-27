@@ -1,0 +1,27 @@
+{% extends 'profile.html' %}
+
+
+{% load static %}
+
+
+
+{% block addform %}
+
+    <h3>Вы на странице изменения задачи </h3>
+
+    <form action="{% url 'edittodo' todo_user=request.user todo_id=todo_id %}" method="post"  id="editform">
+        {% csrf_token %}
+         {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% for f in form %}
+                        <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
+                        <div class="form-error">{{ f.errors }}</div>
+                    {% endfor %}
+       <button type="submit" class="btn btn-facebook btn-user btn-block"> Обновить</button>
+    </form>
+{% endblock %}

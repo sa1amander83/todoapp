@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+
+{% block content %}
+    {% csrf_token %}
+
+    <h1> Ваши задачи</h1>
+
+    {% if todo_list.count == 0 %}
+        <p> Ваш список задач пока пуст</p>
+
+        <a href="{% url 'addtodo' todo_user=request.user %}">
+            Добавить первую задачу <i class="fa-solid fa-plus">
+        </i></a>
+    {% else %}
+        {% block addform %}
+            <table id="todo-table">
+                <tr>
+                    <th> Номер задачи</th>
+                    <th> Краткое описание задачи</th>
+
+
+                    <th> задача создана</th>
+                    <th> Дата начала задачи</th>
+                    <th> Время начала задачи</th>
+                    <th> Задача выполнена</th>
+                    <th colspan="3"> управление</th>
+                </tr>
+
+                {% for task in todo_list %}
+                    {% if task.todo_status %}
+
+                        <tr class="completed" id="completed">
+
+                            {% else %}
+
+                        <tr>
+                    {% endif %}
+                <td> {{ forloop.counter }}</td>
+
+                <td style="width: 200px" id="short-description"> {{ task.todo_short_description }}
+{#                    <input type="button" onclick=showFull()>#}
+                    <div class="full-description" style="display: none"> {{ task.todo_full_description }}</div>
+                </td>
+
+
+
+                <td> {{ task.todo_date_created }}</td>
+                <td> {{ task.todo_start_date }}</td>
+                <td> {{ task.todo_start_time }}</td>
+
+
+
+                <td style="width: 50px;"><input type="checkbox"
+                                                onclick="changeStatus({{ task.id }}, {{ task.todo_status|yesno:"true,false" }})"
+                                                id="myCheckbox" value="" {% if task.todo_status %}
+                                                checked="checked" {% endif %}/></td>
+
+                <td><a href="{% url 'edittodo' todo_user=request.user todo_id=task.id %}"> <i
+                        class="fa-solid fa-pencil"></i></a></td>
+
+                <td><a href="{% url 'deltodo' todo_user=request.user todo_id=task.id %}">
+                    <i class="fa-solid fa-trash-can">
+                    </i></a></td>
+                </tr>
+
+
+
+                {% endfor %}
+                <tr>
+                    <td colspan="9"><a href="{% url 'addtodo' todo_user=request.user %}"> <i
+                            class="fa-solid fa-plus"></i>
+                        Добавить задачу</a></td>
+                </tr>
+
+            </table>
+        {% endblock %}
+    {% endif %}
+
+{% endblock %}
+
+{% block extrascripts %}
+
+    <script>
+
+        $(document).ready(function () {
+
+            $("#short-description").click(function () {
+            $(".full-description").toggle();
+        });
+
+
+            function getCookie(c_name) {
+                if (document.cookie.length > 0) {
+                    c_start = document.cookie.indexOf(c_name + "=");
+                    if (c_start !== -1) {
+                        c_start = c_start + c_name.length + 1;
+                        c_end = document.cookie.indexOf(";", c_start);
+                        if (c_end === -1) c_end = document.cookie.length;
+                        return (document.cookie.substring(c_start, c_end));
+                    }
+                }
+
+
+                return "";
+
+
+            }
+
+            $.ajaxSetup({
+                headers: {"X-CSRFToken": getCookie("csrftoken")}
+            });
+            {#document.getElementById('myCheckbox').addEventListener("change", changeStatus);#}
+
+        })
+
+
+        function changeStatus(task_id, status) {
+
+
+            let url = window.location.href
+            let get_status = status !== true;
+            let tbl = document.getElementById('todo-table')
+            let elements = tbl.getElementsByTagName("input")
+            let todo_row = document.getElementsByTagName("tr")
+            if (document.getElementById("myCheckbox").checked === true) {
+                document.getElementById("completed").style.textDecoration = "line-through"
+            } else {
+                document.getElementById("completed").style.textDecoration = "none"
+
+            }
+
+            $.ajax({
+                type: 'POST',
+                url: url,
+                data: {
+                    task_id: task_id,
+                    is_true: get_status
+                },
+                success: function (response) {
+                    console.log(123)
+
+                }
+
+            })
+
+            function sleep(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+
+            //это конечно тот еще костыль, но оно работает
+            async function delayStatus() {
+                await sleep(50);
+                location.reload()
+            }
+
+            delayStatus();
+
+        }
+
+
+
+
+
+        function showFull() {
+            let block = document.querySelector(".full-description")
+            if (block.style.display === 'table-cell') {
+                block.style.display = 'none'
+            } else {
+                block.style.display = 'table-cell'
+            }
+
+
+        }
+    </script>
+
+{% endblock %}

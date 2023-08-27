@@ -1,0 +1,24 @@
+{% extends 'profile.html' %}
+
+
+{% load static %}
+
+
+
+{% block addform %}
+    <form action="{% url 'addtodo' todo_user=request.user %}" method="post" id="addform">
+        {% csrf_token %}
+         {% if messages %}
+                        <ul class="messages">
+                            {% for message in messages %}
+                                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                    {% for f in form %}
+                        <p><label class="form-label" for="{{ f.id_for_label }}"> {{ f.label }}: </label> {{ f }}</p>
+                        <div class="form-error">{{ f.errors }}</div>
+                    {% endfor %}
+       <button type="submit" class="btn btn-facebook btn-user btn-block"> Добавить</button>
+    </form>
+{% endblock %}
