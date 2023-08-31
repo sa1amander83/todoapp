@@ -103,7 +103,7 @@ class AddTodo(LoginRequiredMixin, CreateView):
         return context
 
     def post(self, request, *args, **kwargs):
-        form=  self.form_class(request.POST)
+        form =  self.form_class(request.POST)
         user=self.kwargs.get('todo_user')
         if form.is_valid():
 
@@ -165,11 +165,14 @@ def logout_user(request):
     logout(request)
     return redirect('login')
 
+
+
+
 class Profile(DetailView):
     model = TodoModel
     template_name = 'profile.html'
-    # slug_url_kwarg = "todo_user"
-    # slug_field = "todo_user"
+    slug_url_kwarg = "todo_user"
+    slug_field = "todo_user"
 
     # def get_user(self, user_id):
     #     try:
@@ -190,6 +193,9 @@ class Profile(DetailView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super().get_context_data(**kwargs)
         context['todo_list'] = TodoModel.objects.filter(todo_user__username=self.kwargs['todo_user']).order_by('id')
+
+        # task_id = self.kwargs['task_id']
+        # is_true = self.kwargs['is_true']
 
         return context
 

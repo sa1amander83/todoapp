@@ -74,17 +74,22 @@ th{
 }
 
 tr.completed td:nth-child(-n+5):before{
-    content: '';
-    text-decoration: line-through;
-    color:green;
-    position: absolute;
-    top: 50%;
-    left: -1px;
-    right:-1px ;
-    height: 1px;
-    border-top: 2px solid green;
+
 }
 
 .task-description{
     display: flex;
+}
+
+.completed {!important;
+
+    text-decoration: line-through;
+    color:green;
+
+}
+.show-descr{
+    display: table-cell;
+}
+.no-show-descr{
+    display: none; !important;
 }

@@ -32,17 +32,19 @@
                 {% for task in todo_list %}
                     {% if task.todo_status %}
 
-                        <tr class="completed" id="completed">
+                        <tr class="completed"  id="completed">
 
                             {% else %}
+     <tr class="non class"  id="completed">
 
-                        <tr>
                     {% endif %}
                 <td> {{ forloop.counter }}</td>
 
-                <td style="width: 200px" id="short-description"> {{ task.todo_short_description }}
-{#                    <input type="button" onclick=showFull()>#}
-                    <div class="full-description" style="display: none"> {{ task.todo_full_description }}</div>
+                <td style="width: 200px" id="short-description"
+                    onclick="showFull({{ forloop.counter }})"> {{ task.todo_short_description }}
+                    {#                    <input type="button" onclick=showFull()>#}<br>
+                    <span class="full-description" id="{{ forloop.counter }}"
+                          style="display: none"> {{ task.todo_full_description }}</span>
                 </td>
 
 
@@ -51,7 +53,7 @@
                 <td> {{ task.todo_start_date }}</td>
                 <td> {{ task.todo_start_time }}</td>
 
-
+    {% csrf_token %}
 
                 <td style="width: 50px;"><input type="checkbox"
                                                 onclick="changeStatus({{ task.id }}, {{ task.todo_status|yesno:"true,false" }})"
@@ -74,7 +76,7 @@
                             class="fa-solid fa-plus"></i>
                         Добавить задачу</a></td>
                 </tr>
-
+    {% csrf_token %}
             </table>
         {% endblock %}
     {% endif %}
@@ -83,97 +85,8 @@
 
 {% block extrascripts %}
 
-    <script>
-
-        $(document).ready(function () {
-
-            $("#short-description").click(function () {
-            $(".full-description").toggle();
-        });
-
-
-            function getCookie(c_name) {
-                if (document.cookie.length > 0) {
-                    c_start = document.cookie.indexOf(c_name + "=");
-                    if (c_start !== -1) {
-                        c_start = c_start + c_name.length + 1;
-                        c_end = document.cookie.indexOf(";", c_start);
-                        if (c_end === -1) c_end = document.cookie.length;
-                        return (document.cookie.substring(c_start, c_end));
-                    }
-                }
-
-
-                return "";
-
-
-            }
-
-            $.ajaxSetup({
-                headers: {"X-CSRFToken": getCookie("csrftoken")}
-            });
-            {#document.getElementById('myCheckbox').addEventListener("change", changeStatus);#}
-
-        })
-
-
-        function changeStatus(task_id, status) {
-
-
-            let url = window.location.href
-            let get_status = status !== true;
-            let tbl = document.getElementById('todo-table')
-            let elements = tbl.getElementsByTagName("input")
-            let todo_row = document.getElementsByTagName("tr")
-            if (document.getElementById("myCheckbox").checked === true) {
-                document.getElementById("completed").style.textDecoration = "line-through"
-            } else {
-                document.getElementById("completed").style.textDecoration = "none"
-
-            }
-
-            $.ajax({
-                type: 'POST',
-                url: url,
-                data: {
-                    task_id: task_id,
-                    is_true: get_status
-                },
-                success: function (response) {
-                    console.log(123)
-
-                }
-
-            })
-
-            function sleep(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-
-            //это конечно тот еще костыль, но оно работает
-            async function delayStatus() {
-                await sleep(50);
-                location.reload()
-            }
-
-            delayStatus();
-
-        }
-
-
-
-
-
-        function showFull() {
-            let block = document.querySelector(".full-description")
-            if (block.style.display === 'table-cell') {
-                block.style.display = 'none'
-            } else {
-                block.style.display = 'table-cell'
-            }
-
-
-        }
-    </script>
+  <script>
+const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+</script>
 
 {% endblock %}
