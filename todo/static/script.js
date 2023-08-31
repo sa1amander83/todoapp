@@ -77,13 +77,8 @@
 
             let nextEl = document.getElementById(el)
 
-            if (nextEl.style.display === 'table-cell' && nextEl.tagName === 'SPAN') {
-                nextEl.style.display = 'none'
+            nextEl.classList.toggle('show-descr')
 
-            } else if (nextEl.style.display === 'none' && nextEl.tagName === 'SPAN') {
 
-                nextEl.style.display = 'table-cell'
 
-            }
-            return false
         }

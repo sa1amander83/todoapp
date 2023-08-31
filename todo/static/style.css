@@ -88,8 +88,8 @@ tr.completed td:nth-child(-n+5):before{
 
 }
 .show-descr{
-    display: table-cell;
+    display: table-cell !important;
 }
 .no-show-descr{
-    display: none; !important;
+    display: none;
 }
