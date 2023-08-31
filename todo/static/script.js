@@ -43,11 +43,14 @@
                   el_tr.classList.toggle('completed')
 
             }
-
+            var csrftoken = $("[name=csrfmiddlewaretoken]").val();
             $.ajax({
                 type: 'POST',
                 mode: 'same-origin',
                 url: url,
+                 headers:{
+        "X-CSRFToken": csrftoken
+    },
                 data: {
                     task_id: task_id,
                     is_true: get_status
@@ -62,7 +65,7 @@
 
             //это конечно тот еще костыль, но оно работает
             async function delayStatus() {
-                await sleep(50);
+                await sleep(500);
                 location.reload()
             }
 
